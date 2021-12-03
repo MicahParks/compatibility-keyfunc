@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	// Get the JWKs URL from your AWS region and userPoolId.
+	// Get the JWKS URL from your AWS region and userPoolId.
 	//
 	// See the AWS docs here:
 	// https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
@@ -20,27 +20,23 @@ func main() {
 	userPoolID := "" // TODO Get the user pool ID of your AWS Cognito instance.
 	jwksURL := fmt.Sprintf("https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json", regionID, userPoolID)
 
-	// Create the keyfunc options. Use an error handler that logs. Refresh the JWKs when a JWT signed by an unknown KID
-	// is found or at the specified interval. Rate limit these refreshes. Timeout the initial JWKs refresh request after
+	// Create the keyfunc options. Use an error handler that logs. Refresh the JWKS when a JWT signed by an unknown KID
+	// is found or at the specified interval. Rate limit these refreshes. Timeout the initial JWKS refresh request after
 	// 10 seconds. This timeout is also used to create the initial context.Context for keyfunc.Get.
-	refreshInterval := time.Hour
-	refreshRateLimit := time.Minute * 5
-	refreshTimeout := time.Second * 10
-	refreshUnknownKID := true
 	options := keyfunc.Options{
 		RefreshErrorHandler: func(err error) {
 			log.Printf("There was an error with the jwt.Keyfunc\nError: %s", err.Error())
 		},
-		RefreshInterval:   refreshInterval,
-		RefreshRateLimit:  refreshRateLimit,
-		RefreshTimeout:    refreshTimeout,
-		RefreshUnknownKID: &refreshUnknownKID,
+		RefreshInterval:   time.Hour,
+		RefreshRateLimit:  time.Minute * 5,
+		RefreshTimeout:    time.Second * 10,
+		RefreshUnknownKID: true,
 	}
 
-	// Create the JWKs from the resource at the given URL.
+	// Create the JWKS from the resource at the given URL.
 	jwks, err := keyfunc.Get(jwksURL, options)
 	if err != nil {
-		log.Fatalf("Failed to create JWKs from resource at the given URL.\nError: %s", err.Error())
+		log.Fatalf("Failed to create JWKS from resource at the given URL.\nError: %s", err.Error())
 	}
 
 	// Get a JWT to parse.

@@ -12,36 +12,32 @@ import (
 
 func main() {
 
-	// Get the JWKs URL.
+	// Get the JWKS URL.
 	//
-	// This is a sample JWKs service. Visit https://jwks-service.appspot.com/ and grab a token to test this example.
+	// This is a sample JWKS service. Visit https://jwks-service.appspot.com/ and grab a token to test this example.
 	jwksURL := "https://jwks-service.appspot.com/.well-known/jwks.json"
 
-	// Create a context that, when cancelled, ends the JWKs background refresh goroutine.
+	// Create a context that, when cancelled, ends the JWKS background refresh goroutine.
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// Create the keyfunc options. Use an error handler that logs. Refresh the JWKs when a JWT signed by an unknown KID
-	// is found or at the specified interval. Rate limit these refreshes. Timeout the initial JWKs refresh request after
+	// Create the keyfunc options. Use an error handler that logs. Refresh the JWKS when a JWT signed by an unknown KID
+	// is found or at the specified interval. Rate limit these refreshes. Timeout the initial JWKS refresh request after
 	// 10 seconds. This timeout is also used to create the initial context.Context for keyfunc.Get.
-	refreshInterval := time.Hour
-	refreshRateLimit := time.Minute * 5
-	refreshTimeout := time.Second * 10
-	refreshUnknownKID := true
 	options := keyfunc.Options{
 		Ctx: ctx,
 		RefreshErrorHandler: func(err error) {
 			log.Printf("There was an error with the jwt.Keyfunc\nError: %s", err.Error())
 		},
-		RefreshInterval:   refreshInterval,
-		RefreshRateLimit:  refreshRateLimit,
-		RefreshTimeout:    refreshTimeout,
-		RefreshUnknownKID: &refreshUnknownKID,
+		RefreshInterval:   time.Hour,
+		RefreshRateLimit:  time.Minute * 5,
+		RefreshTimeout:    time.Second * 10,
+		RefreshUnknownKID: true,
 	}
 
-	// Create the JWKs from the resource at the given URL.
+	// Create the JWKS from the resource at the given URL.
 	jwks, err := keyfunc.Get(jwksURL, options)
 	if err != nil {
-		log.Fatalf("Failed to create JWKs from resource at the given URL.\nError: %s", err.Error())
+		log.Fatalf("Failed to create JWKS from resource at the given URL.\nError: %s", err.Error())
 	}
 
 	// Get a JWT to parse.

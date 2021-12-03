@@ -1,4 +1,4 @@
-module github.com/MicahParks/keyfunc
+module github.com/MicahParks/compatibility-keyfunc
 
 go 1.13
 

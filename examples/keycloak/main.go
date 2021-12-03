@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 
@@ -10,22 +11,28 @@ import (
 
 func main() {
 
-	// Get the JWKs URL.
+	// Get the JWKS URL.
 	//
-	// This is a local Keycloak JWKs endpoint for the master realm.
+	// This is a local Keycloak JWKS endpoint for the master realm.
 	jwksURL := "http://localhost:8080/auth/realms/master/protocol/openid-connect/certs"
 
-	// Create the keyfunc options. Use an error handler that logs.
+	// Create the keyfunc options. Use an error handler that logs. Refresh the JWKS when a JWT signed by an unknown KID
+	// is found or at the specified interval. Rate limit these refreshes. Timeout the initial JWKS refresh request after
+	// 10 seconds. This timeout is also used to create the initial context.Context for keyfunc.Get.
 	options := keyfunc.Options{
 		RefreshErrorHandler: func(err error) {
 			log.Printf("There was an error with the jwt.Keyfunc\nError: %s", err.Error())
 		},
+		RefreshInterval:   time.Hour,
+		RefreshRateLimit:  time.Minute * 5,
+		RefreshTimeout:    time.Second * 10,
+		RefreshUnknownKID: true,
 	}
 
-	// Create the JWKs from the resource at the given URL.
+	// Create the JWKS from the resource at the given URL.
 	jwks, err := keyfunc.Get(jwksURL, options)
 	if err != nil {
-		log.Fatalf("Failed to create JWKs from resource at the given URL.\nError: %s", err.Error())
+		log.Fatalf("Failed to create JWKS from resource at the given URL.\nError: %s", err.Error())
 	}
 
 	// Get a JWT to parse.
