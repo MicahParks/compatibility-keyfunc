@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/dgrijalva/jwt-go"
 	legacy "github.com/dgrijalva/jwt-go"
 	f3t "github.com/form3tech-oss/jwt-go"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 	ErrUnsupportedKeyType = errors.New("the JWT key type is unsupported")
 )
 
-// Keyfunc is a compatibility function that matches the signature of github.com/golang-jwt/jwt/v4's jwt.Keyfunc
+// Keyfunc is a compatibility function that matches the signature of github.com/dgrijalva/jwt-go's jwt.Keyfunc
 // function.
 func (j *JWKs) Keyfunc(token *jwt.Token) (interface{}, error) {
 

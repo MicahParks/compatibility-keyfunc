@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/MicahParks/keyfunc"
 )
