@@ -2,7 +2,6 @@ package keyfunc
 
 import (
 	"crypto/ecdsa"
-	"crypto/ed25519"
 	"crypto/rsa"
 )
 
@@ -41,13 +40,6 @@ func NewGivenCustom(key interface{}) (givenKey GivenKey) {
 
 // NewGivenECDSA creates a new GivenKey given an ECDSA public key.
 func NewGivenECDSA(key *ecdsa.PublicKey) (givenKey GivenKey) {
-	return GivenKey{
-		inter: key,
-	}
-}
-
-// NewGivenEdDSA creates a new GivenKey given an EdDSA public key.
-func NewGivenEdDSA(key ed25519.PublicKey) (givenKey GivenKey) {
 	return GivenKey{
 		inter: key,
 	}
