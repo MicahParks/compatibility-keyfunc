@@ -16,7 +16,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"github.com/MicahParks/keyfunc"
+	"github.com/MicahParks/compatibility-keyfunc"
 )
 
 const (
