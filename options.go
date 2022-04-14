@@ -14,7 +14,6 @@ import (
 // When using a background refresh goroutine, make sure to use RefreshRateLimit if paired with RefreshUnknownKID. Also
 // make sure to end the background refresh goroutine with the JWKS.EndBackground method when it's no longer needed.
 type Options struct {
-
 	// Client is the HTTP client used to get the JWKS via HTTP.
 	Client *http.Client
 
@@ -47,7 +46,7 @@ type Options struct {
 	RefreshRateLimit time.Duration
 
 	// RefreshTimeout is the duration for the context timeout used to create the HTTP request for a refresh of the JWKS.
-	// This defaults to one minute. This is only effectual if RefreshInterval is not nil.
+	// This defaults to one minute. This is used for the HTTP request and any background goroutine refreshes.
 	RefreshTimeout time.Duration
 
 	// RefreshUnknownKID indicates that the JWKS refresh request will occur every time a kid that isn't cached is seen.
@@ -62,12 +61,14 @@ func applyOptions(jwks *JWKS, options Options) {
 	if options.Ctx != nil {
 		jwks.ctx, jwks.cancel = context.WithCancel(options.Ctx)
 	}
+
 	if options.GivenKeys != nil {
 		jwks.givenKeys = make(map[string]GivenKey)
 		for kid, key := range options.GivenKeys {
 			jwks.givenKeys[kid] = key
 		}
 	}
+
 	jwks.client = options.Client
 	jwks.givenKIDOverride = options.GivenKIDOverride
 	jwks.refreshErrorHandler = options.RefreshErrorHandler

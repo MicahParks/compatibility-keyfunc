@@ -12,16 +12,12 @@ type GivenKey struct {
 
 // NewGiven creates a JWKS from a map of given keys.
 func NewGiven(givenKeys map[string]GivenKey) (jwks *JWKS) {
-
-	// Initialize the map of kid to cryptographic keys.
 	keys := make(map[string]interface{})
 
-	// Copy the given keys to the map of cryptographic keys.
 	for kid, given := range givenKeys {
 		keys[kid] = given.inter
 	}
 
-	// Return a JWKS with the map of cryptographic keys.
 	return &JWKS{
 		keys: keys,
 	}
@@ -30,7 +26,7 @@ func NewGiven(givenKeys map[string]GivenKey) (jwks *JWKS) {
 // NewGivenCustom creates a new GivenKey given an untyped variable. The key argument is expected to be a supported
 // by the jwt package used.
 //
-// See the https://pkg.go.dev/github.com/dgrijalva/jwt-go#RegisterSigningMethod function for registering an unsupported
+// See the https://pkg.go.dev/github.com/golang-jwt/jwt/v4#RegisterSigningMethod function for registering an unsupported
 // signing method.
 func NewGivenCustom(key interface{}) (givenKey GivenKey) {
 	return GivenKey{

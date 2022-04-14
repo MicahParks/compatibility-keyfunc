@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	// Declare the custom signing method's key and key ID.
 	const key = ""
 	const exampleKID = "exampleKeyID"
@@ -34,8 +33,8 @@ func main() {
 	})
 
 	// Parse the token.
-	var token *jwt.Token
-	if token, err = jwt.Parse(jwtB64, jwks.Keyfunc); err != nil {
+	token, err := jwt.Parse(jwtB64, jwks.KeyfuncLegacy)
+	if err != nil {
 		log.Fatalf("Failed to parse the JWT.\nError: %s", err.Error())
 	}
 
